@@ -1,5 +1,7 @@
 # hdcms
 
+In the future: rewrite it to use `scikit-build`: [link](https://scikit-build.readthedocs.io/en/latest/usage.html)
+
 This is a wrapper for the `hdcms` C source. It has a similar
 interface.
 
