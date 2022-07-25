@@ -46,3 +46,6 @@ https://numpy.org/doc/stable/user/c-info.how-to-extend.html
 https://numpy.org/doc/stable/reference/c-api/array.html#c.PyArray_SimpleNew
 https://numpy.org/doc/stable/reference/c-api/dtype.html
 
+# Changelog
+
+0.0.6 Ignore headers in data files
