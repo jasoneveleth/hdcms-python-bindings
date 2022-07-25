@@ -86,7 +86,7 @@ filenames_to_stats_parse(PyObject *dummy, PyObject *args, int mflag)
 
     int len = strlen(str) + 1;
     char *copy = safe_calloc(len, 1);
-    strlcpy(copy, str, len);
+    strncpy(copy, str, len);
     struct matrix m = filenames_to_stats(copy, mflag);
 
     assert(m.is_owner);
