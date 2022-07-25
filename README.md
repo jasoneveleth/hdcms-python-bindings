@@ -48,4 +48,6 @@ https://numpy.org/doc/stable/reference/c-api/dtype.html
 
 # Changelog
 
+0.0.7 Change strlcpy to strncpy for Linux
+
 0.0.6 Ignore headers in data files
