@@ -76,10 +76,14 @@ mat_to_pyobject(struct matrix m)
 }
 
 static PyObject*
-filenames_to_stats_parse(PyObject *dummy, PyObject *args, int mflag)
+filenames_to_stats_parse(PyObject *dummy, PyObject *args, PyObject *kwargs, int mflag)
 {
+    double start = 0, end = 899.90000000000009094947, num_bins = 9000;
+
+    static char *kwlist[] = {"filenames", "start", "end", "num_bins", NULL};
+
     const char *str;
-    if (!PyArg_ParseTuple(args, "s", &str)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|ddd", kwlist, &str, &start, &end, &num_bins)) {
         PyErr_SetString(PyExc_RuntimeError, "didn't reviece a string");
         return NULL;
     }
@@ -87,7 +91,7 @@ filenames_to_stats_parse(PyObject *dummy, PyObject *args, int mflag)
     int len = strlen(str) + 1;
     char *copy = safe_calloc(len, 1);
     strncpy(copy, str, len);
-    struct matrix m = filenames_to_stats(copy, mflag);
+    struct matrix m = filenames_to_stats(copy, mflag, start, end, num_bins);
 
     assert(m.is_owner);
 
@@ -95,22 +99,25 @@ filenames_to_stats_parse(PyObject *dummy, PyObject *args, int mflag)
 }
 
 static PyObject*
-filenames_to_stats_1d_cfunc(PyObject *dummy, PyObject *args)
+filenames_to_stats_1d_cfunc(PyObject *dummy, PyObject *args, PyObject *kwargs)
 {
-    return filenames_to_stats_parse(dummy, args, ONED);
+    return filenames_to_stats_parse(dummy, args, kwargs, ONED);
 }
 
 static PyObject*
-filenames_to_stats_2d_cfunc(PyObject *dummy, PyObject *args)
+filenames_to_stats_2d_cfunc(PyObject *dummy, PyObject *args, PyObject *kwargs)
 {
-    return filenames_to_stats_parse(dummy, args, TWOD);
+    return filenames_to_stats_parse(dummy, args, kwargs, TWOD);
 }
 
 static PyObject*
-compare_compound_parse(PyObject *dummy, PyObject *args, int mflag)
+compare_compound_parse(PyObject *dummy, PyObject *args, PyObject *kwargs, int mflag)
 {
     PyObject *arg1, *arg2;
-    if (!PyArg_ParseTuple(args, "O!O!", &PyArray_Type, &arg1, &PyArray_Type, &arg2)) {
+    double desingularization = 1e-4;
+    size_t max_peaks = -1;
+    static char *kwlist[] = {"x1", "x2", "desingularization", "max_peaks", NULL};
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,  "O!O!|dk", kwlist, &PyArray_Type, &arg1, &PyArray_Type, &arg2, &desingularization, &max_peaks)) {
         PyErr_SetString(PyExc_RuntimeError, "didn't recieve arrays");
         return NULL;
     }
@@ -132,29 +139,38 @@ compare_compound_parse(PyObject *dummy, PyObject *args, int mflag)
         return NULL;
     }
 
-    double ret = compare_compound(m1, m2, mflag);
+    if (max_peaks != -1) {
+        max_peaks = m1.len1;
+    }
+
+    double ret = compare_compound(m1, m2, mflag, desingularization, max_peaks);
     mat_free(m1);
     mat_free(m2);
     return Py_BuildValue("d", ret);
 }
 
 static PyObject*
-compare_compound_1d_cfunc(PyObject *dummy, PyObject *args)
+compare_compound_1d_cfunc(PyObject *dummy, PyObject *args, PyObject *kwargs)
 {
-    return compare_compound_parse(dummy, args, ONED);
+    return compare_compound_parse(dummy, args, kwargs, ONED);
 }
 
 static PyObject*
-compare_compound_2d_cfunc(PyObject *dummy, PyObject *args)
+compare_compound_2d_cfunc(PyObject *dummy, PyObject *args, PyObject *kwargs)
 {
-    return compare_compound_parse(dummy, args, TWOD);
+    return compare_compound_parse(dummy, args, kwargs, TWOD);
 }
 
 static PyObject*
-compare_all_parse(PyObject *dummy, PyObject *args, int mflag)
+compare_all_parse(PyObject *dummy, PyObject *args, PyObject *kwargs, int mflag)
 {
     PyObject *obj;
-    if (!PyArg_ParseTuple(args, "O", &obj)) {
+
+    double desingularization = 1e-4;
+    size_t max_peaks = -1;
+    static char *kwlist[] = {"x", "desingularization", "max_peaks", NULL};
+
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|dk", kwlist, &obj, &desingularization, &max_peaks)) {
         PyErr_SetString(PyExc_RuntimeError, "didn't recieve an object");
         return NULL;
     }
@@ -175,35 +191,40 @@ compare_all_parse(PyObject *dummy, PyObject *args, int mflag)
         }
         matarr_set(matarr, i, mat_from_pyobject(arrays[i]));
     }
-    struct matrix mat = compare_all(matarr, mflag);
+
+    if (max_peaks != -1) {
+        max_peaks = (matarr_get(matarr, 0)).len1;
+    }
+
+    struct matrix mat = compare_all(matarr, mflag, desingularization, max_peaks);
     return mat_to_pyobject(mat);
 }
 
 
 static PyObject*
-compare_all_1d_cfunc(PyObject *dummy, PyObject *args)
+compare_all_1d_cfunc(PyObject *dummy, PyObject *args, PyObject *kwargs)
 {
-    return compare_all_parse(dummy, args, ONED);
+    return compare_all_parse(dummy, args, kwargs, ONED);
 }
 
 static PyObject*
-compare_all_2d_cfunc(PyObject *dummy, PyObject *args)
+compare_all_2d_cfunc(PyObject *dummy, PyObject *args, PyObject *kwargs)
 {
-    return compare_all_parse(dummy, args, TWOD);
+    return compare_all_parse(dummy, args, kwargs, TWOD);
 }
 
 static PyMethodDef mymethods[] = {
-    {"filenames_to_stats_1d", filenames_to_stats_1d_cfunc, METH_VARARGS, 
+    {"filenames_to_stats_1d", (PyCFunction)filenames_to_stats_1d_cfunc, METH_VARARGS|METH_KEYWORDS, 
       "takes a list of filenames for (high resolution) replicates, and returns the statistics for them all"},
-    {"filenames_to_stats_2d", filenames_to_stats_2d_cfunc, METH_VARARGS, 
+    {"filenames_to_stats_2d", (PyCFunction)filenames_to_stats_2d_cfunc, METH_VARARGS|METH_KEYWORDS, 
       "takes a list of filenames for (low resolution) replicates, and returns the statistics for them all"},
-    {"compare_compound_1d", compare_compound_1d_cfunc, METH_VARARGS,
+    {"compare_compound_1d", (PyCFunction)compare_compound_1d_cfunc, METH_VARARGS|METH_KEYWORDS,
       "takes 2 summary-statistics arrays (output of filenames_to_stats_1d) returns the similarity of the stats"},
-    {"compare_compound_2d", compare_compound_2d_cfunc, METH_VARARGS,
+    {"compare_compound_2d", (PyCFunction)compare_compound_2d_cfunc, METH_VARARGS|METH_KEYWORDS,
       "takes 2 summary-statistics arrays (output of filenames_to_stats_2d) returns the similarity of the stats"},
-    {"compare_all_1d", compare_all_1d_cfunc, METH_VARARGS,
+    {"compare_all_1d", (PyCFunction)compare_all_1d_cfunc, METH_VARARGS|METH_KEYWORDS,
       "takes a list/array/sequence of summary-statistics arrays (output of filenames_to_stats_1d) returns a 2d array of comparisons"},
-    {"compare_all_2d", compare_all_2d_cfunc, METH_VARARGS,
+    {"compare_all_2d", (PyCFunction)compare_all_2d_cfunc, METH_VARARGS|METH_KEYWORDS,
       "takes a list/array/sequence of summary-statistics arrays (output of filenames_to_stats_2d) returns a 2d array of comparisons"},
     {NULL, NULL, 0, NULL} /* Sentinel */
 };

@@ -48,6 +48,8 @@ https://numpy.org/doc/stable/reference/c-api/dtype.html
 
 # Changelog
 
+0.0.8 Add keyword args: adding `desingularization` and `max_peaks` to the `filenames_to_stats` functions, and `start`, `end`, and `num_bins` to the comparison functions. They all are initalized with the default args they had before.
+
 0.0.7 Change strlcpy to strncpy for Linux
 
 0.0.6 Ignore headers in data files
