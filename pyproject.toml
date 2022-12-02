@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hdcms"
-version = "0.0.8"
+version = "0.1.0"
 description = "This package wraps the C functions in hdcms"
 authors = [
     {name="Jason Eveleth", email="hdcms@jasoneveleth.com"},
@@ -15,5 +15,5 @@ requires-python = ">=3.7"
 license = { file="LICENSE" }
 
 [project.urls]
-"Homepage" = "https://github.com/pypa/sampleproject"
-"Bug Tracker" = "https://github.com/pypa/sampleproject/issues"
+"Homepage" = "https://github.com/jasoneveleth/hdcms-bindings"
+"Bug Tracker" = "https://github.com/jasoneveleth/hdcms-bindings/issues"
