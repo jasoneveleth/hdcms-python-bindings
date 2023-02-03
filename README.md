@@ -1,22 +1,22 @@
 # hdcms-bindings
 
-This is a wrapper for the `hdcms` C source. It is not meant to be used as a standalone package. Use [hdcms-helper](https://github.com/jasoneveleth/hdcms-helper) instead.
+This is a wrapper for the `hdcms` C source. It is not meant to be used as a standalone package. Use [hdcms](https://github.com/jasoneveleth/hdcms) instead.
 
 The current dependency graph for the projects is as follows:
 
-hdcms (C files source + binary) -> hdcms-bindings (C-extension/.so file) -> hdcms-helper (python functions)
+hdcms (C files source + binary) -> hdcms-bindings (C-extension/.so file) -> hdcms (python functions)
 
-This project (the middle one) isn't meant to be used as a standalone project, but I couldn't get python to generate the C-extension and export python functionality in the same package which is why I split it up. If you would like to use it however, it is available at pypi [here](https://pypi.org/project/hdcms/).
+This project (the middle one) isn't meant to be used as a standalone project, but I couldn't get python to generate the C-extension and export python functionality in the same package which is why I split it up. If you would like to use it however, it is available at pypi [here](https://pypi.org/project/hdcms-bindings/).
 
 ## Examples
 
 ```python
-import hdcms
-c9 = hdcms.filenames_to_stats_1d("data/CM1_9_1.txt,data/CM1_9_2.txt,data/CM1_9_3.txt")
-c10 = hdcms.filenames_to_stats_1d("data/CM1_10_1.txt,data/CM1_10_2.txt,data/CM1_10_3.txt")
-c3 = hdcms.filenames_to_stats_1d("data/CM1_3_1.txt,data/CM1_3_2.txt,data/CM1_3_3.txt")
-print(hdcms.compare_compound_1d(c10, c8), "\n")
-print(hdcms.compare_all_1d([c10,c8,c9]))
+import hdcms_bindings as hdcbind
+c9 = hdcbind.filenames_to_stats_1d("data/CM1_9_1.txt,data/CM1_9_2.txt,data/CM1_9_3.txt")
+c10 = hdcbind.filenames_to_stats_1d("data/CM1_10_1.txt,data/CM1_10_2.txt,data/CM1_10_3.txt")
+c3 = hdcbind.filenames_to_stats_1d("data/CM1_3_1.txt,data/CM1_3_2.txt,data/CM1_3_3.txt")
+print(hdcbind.compare_compound_1d(c10, c8), "\n")
+print(hdcbind.compare_all_1d([c10,c8,c9]))
 ```
 
 You can also use the 2d functions by changing the `_1d` suffix to
@@ -50,6 +50,8 @@ https://numpy.org/doc/stable/reference/c-api/array.html#c.PyArray_SimpleNew
 https://numpy.org/doc/stable/reference/c-api/dtype.html
 
 # Changelog
+
+0.1.1 Rename package
 
 0.1.0 Add documentation
 
