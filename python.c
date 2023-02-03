@@ -2,10 +2,10 @@
 #include <Python.h>
 #define NPY_NO_DEPRECATED_API NPY_1_22_API_VERSION
 #include <numpy/arrayobject.h>
-#include "hdcms/src/main.c"
-#include "hdcms/src/util/array.c"
-#include "hdcms/src/util/peak.c"
-#include "hdcms/src/util/bin.c"
+#include "hdcms-c/src/main.c"
+#include "hdcms-c/src/util/array.c"
+#include "hdcms-c/src/util/peak.c"
+#include "hdcms-c/src/util/bin.c"
 
 static bool
 is_pyobject_a_matrix(PyObject *arg)
@@ -231,7 +231,7 @@ static PyMethodDef mymethods[] = {
 
 static struct PyModuleDef spammodule = {
     PyModuleDef_HEAD_INIT,
-    "hdcms",   /* name of module */
+    "hdcms_bindings",   /* name of module */
     NULL,      /* module documentation, may be NULL */
     -1,        /* size of per-interpreter state of the module,
                  or -1 if the module keeps state in global variables. */
@@ -239,7 +239,7 @@ static struct PyModuleDef spammodule = {
 };
 
 PyMODINIT_FUNC
-PyInit_hdcms(void)
+PyInit_hdcms_bindings(void) // this is the name that you import
 {
     import_array()
     return PyModule_Create(&spammodule);

@@ -51,7 +51,13 @@ https://numpy.org/doc/stable/reference/c-api/dtype.html
 
 # Changelog
 
-0.1.1 Rename package
+0.1.4 Rename package (setup.py has the import name, which must match the c lib symbols)
+
+0.1.3 Rename package for real for real
+
+0.1.2 Rename package for real (broken)
+
+0.1.1 Rename package (broken)
 
 0.1.0 Add documentation
 

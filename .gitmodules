@@ -1,0 +1,3 @@
+[submodule "hdcms-c"]
+	path = hdcms-c
+	url = https://github.com/jasoneveleth/hdcms-c

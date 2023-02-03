@@ -16,6 +16,6 @@ package_info = {
 include = [np.get_include(), sysconfig.get_path("include")]
 source = ["python.c"]
 # used in `import <name>`
-module = Extension(name, source, include_dirs=include)
+module = Extension("hdcms_bindings", source, include_dirs=include)
 
 setup(**package_info, ext_modules=[module])
