@@ -115,9 +115,9 @@ compare_compound_parse(PyObject *dummy, PyObject *args, PyObject *kwargs, int mf
 {
     PyObject *arg1, *arg2;
     double desingularization = 1e-4;
-    size_t max_peaks = -1;
+    long int max_peaks = -1;
     static char *kwlist[] = {"x1", "x2", "desingularization", "max_peaks", NULL};
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs,  "O!O!|dk", kwlist, &PyArray_Type, &arg1, &PyArray_Type, &arg2, &desingularization, &max_peaks)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs,  "O!O!|dl", kwlist, &PyArray_Type, &arg1, &PyArray_Type, &arg2, &desingularization, &max_peaks)) {
         PyErr_SetString(PyExc_RuntimeError, "didn't recieve arrays");
         return NULL;
     }
@@ -167,10 +167,10 @@ compare_all_parse(PyObject *dummy, PyObject *args, PyObject *kwargs, int mflag)
     PyObject *obj;
 
     double desingularization = 1e-4;
-    size_t max_peaks = -1;
+    long int max_peaks = -1;
     static char *kwlist[] = {"x", "desingularization", "max_peaks", NULL};
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|dk", kwlist, &obj, &desingularization, &max_peaks)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "O|dl", kwlist, &obj, &desingularization, &max_peaks)) {
         PyErr_SetString(PyExc_RuntimeError, "didn't recieve an object");
         return NULL;
     }
