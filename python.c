@@ -79,12 +79,16 @@ static PyObject*
 filenames_to_stats_1d_cfunc(PyObject *dummy, PyObject *args, PyObject *kwargs)
 {
     double start = 0, end = 899.90000000000009094947, num_bins = 9000;
-    char scaling = 'm';
 
     static char *kwlist[] = {"filenames", "start", "end", "num_bins", "scaling", NULL};
 
+    PyObject_Print(args, stdout, 0);
+    fprintf(stdout, "\n");
+    PyObject_Print(kwargs, stdout, 0);
+    fprintf(stdout, "\n");
     const char *str;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|dddc", kwlist, &str, &start, &end, &num_bins, &scaling)) {
+    const char *scaling = "m";
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|ddds", kwlist, &str, &start, &end, &num_bins, &scaling)) {
         PyErr_SetString(PyExc_RuntimeError, "failed to parse args (in C)");
         return NULL;
     }
@@ -92,7 +96,7 @@ filenames_to_stats_1d_cfunc(PyObject *dummy, PyObject *args, PyObject *kwargs)
     int len = strlen(str) + 1;
     char *copy = safe_calloc(len, 1);
     strncpy(copy, str, len);
-    struct matrix m = filenames_to_stats(copy, ONED, start, end, num_bins, scaling);
+    struct matrix m = filenames_to_stats(copy, ONED, start, end, num_bins, scaling[0]);
 
     assert(m.is_owner);
 
@@ -104,12 +108,8 @@ filenames_to_stats_2d_cfunc(PyObject *dummy, PyObject *args, PyObject *kwargs)
 {
     static char *kwlist[] = {"filenames", "scaling", NULL};
 
-    PyObject_Print(args, stdout, 0);
-    fprintf(stdout, "\n");
-    PyObject_Print(kwargs, stdout, 0);
-    fprintf(stdout, "\n");
     const char *str;
-    const char *scaling;
+    const char *scaling = "m";
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|s", kwlist, &str, &scaling)) {
         PyErr_SetString(PyExc_RuntimeError, "failed to parse args (in C)");
         return NULL;
@@ -119,7 +119,7 @@ filenames_to_stats_2d_cfunc(PyObject *dummy, PyObject *args, PyObject *kwargs)
     char *copy = safe_calloc(len, 1);
     strncpy(copy, str, len);
     // we can pass dummy values since they will be singored by the mflag
-    struct matrix m = filenames_to_stats(copy, TWOD, 0, 0, 0, scaling);
+    struct matrix m = filenames_to_stats(copy, TWOD, 0, 0, 0, scaling[0]);
 
     assert(m.is_owner);
 
