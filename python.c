@@ -104,7 +104,7 @@ filenames_to_stats_2d_cfunc(PyObject *dummy, PyObject *args, PyObject *kwargs)
 {
     char scaling = 'm';
 
-    static char *kwlist[] = {"filenames", "scaling", NULL};
+    static char *kwlist[] = {"scaling", NULL};
 
     PyObject_Print(args, stdout, 0);
     fprintf(stdout, "\n");
