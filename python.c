@@ -79,7 +79,7 @@ static PyObject*
 filenames_to_stats_parse(PyObject *dummy, PyObject *args, PyObject *kwargs, int mflag)
 {
     double start = 0, end = 899.90000000000009094947, num_bins = 9000;
-    char scaling;
+    char scaling = 'm';
 
     static char *kwlist[] = {"filenames", "start", "end", "num_bins", "scaling", NULL};
 
