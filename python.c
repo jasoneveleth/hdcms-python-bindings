@@ -102,16 +102,15 @@ filenames_to_stats_1d_cfunc(PyObject *dummy, PyObject *args, PyObject *kwargs)
 static PyObject*
 filenames_to_stats_2d_cfunc(PyObject *dummy, PyObject *args, PyObject *kwargs)
 {
-    char scaling = 'm';
-
-    static char *kwlist[] = {"scaling", NULL};
+    static char *kwlist[] = {"filenames", "scaling", NULL};
 
     PyObject_Print(args, stdout, 0);
     fprintf(stdout, "\n");
     PyObject_Print(kwargs, stdout, 0);
     fprintf(stdout, "\n");
     const char *str;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|c", kwlist, &str, &scaling)) {
+    const char *scaling;
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|s", kwlist, &str, &scaling)) {
         PyErr_SetString(PyExc_RuntimeError, "failed to parse args (in C)");
         return NULL;
     }
