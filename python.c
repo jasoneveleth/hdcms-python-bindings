@@ -84,7 +84,7 @@ filenames_to_stats_1d_cfunc(PyObject *dummy, PyObject *args, PyObject *kwargs)
     static char *kwlist[] = {"filenames", "start", "end", "num_bins", "scaling", NULL};
 
     const char *str;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "sdddc", kwlist, &str, &start, &end, &num_bins, &scaling)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|dddc", kwlist, &str, &start, &end, &num_bins, &scaling)) {
         PyErr_SetString(PyExc_RuntimeError, "failed to parse args (in C)");
         return NULL;
     }
@@ -106,8 +106,12 @@ filenames_to_stats_2d_cfunc(PyObject *dummy, PyObject *args, PyObject *kwargs)
 
     static char *kwlist[] = {"filenames", "scaling", NULL};
 
+    PyObject_Print(args, stdout, 0);
+    fprintf(stdout, "\n");
+    PyObject_Print(kwargs, stdout, 0);
+    fprintf(stdout, "\n");
     const char *str;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "sc", kwlist, &str, &scaling)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|c", kwlist, &str, &scaling)) {
         PyErr_SetString(PyExc_RuntimeError, "failed to parse args (in C)");
         return NULL;
     }
