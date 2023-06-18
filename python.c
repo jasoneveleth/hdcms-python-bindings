@@ -92,7 +92,7 @@ filenames_to_stats_1d_cfunc(PyObject *dummy, PyObject *args, PyObject *kwargs)
     int len = strlen(str) + 1;
     char *copy = safe_calloc(len, 1);
     strncpy(copy, str, len);
-    struct matrix m = filenames_to_stats(copy, mflag, start, end, num_bins, scaling);
+    struct matrix m = filenames_to_stats(copy, ONED, start, end, num_bins, scaling);
 
     assert(m.is_owner);
 
@@ -115,7 +115,8 @@ filenames_to_stats_2d_cfunc(PyObject *dummy, PyObject *args, PyObject *kwargs)
     int len = strlen(str) + 1;
     char *copy = safe_calloc(len, 1);
     strncpy(copy, str, len);
-    struct matrix m = filenames_to_stats(copy, mflag, start, end, num_bins, scaling);
+    // we can pass dummy values since they will be singored by the mflag
+    struct matrix m = filenames_to_stats(copy, TWOD, 0, 0, 0, scaling);
 
     assert(m.is_owner);
 
