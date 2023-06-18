@@ -76,7 +76,7 @@ mat_to_pyobject(struct matrix m)
 }
 
 static PyObject*
-filenames_to_stats_parse(PyObject *dummy, PyObject *args, PyObject *kwargs, int mflag)
+filenames_to_stats_1d_cfunc(PyObject *dummy, PyObject *args, PyObject *kwargs)
 {
     double start = 0, end = 899.90000000000009094947, num_bins = 9000;
     char scaling = 'm';
@@ -85,7 +85,7 @@ filenames_to_stats_parse(PyObject *dummy, PyObject *args, PyObject *kwargs, int 
 
     const char *str;
     if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|dddc", kwlist, &str, &start, &end, &num_bins, &scaling)) {
-        PyErr_SetString(PyExc_RuntimeError, "didn't reviece a string");
+        PyErr_SetString(PyExc_RuntimeError, "failed to parse args (in C)");
         return NULL;
     }
 
@@ -100,15 +100,26 @@ filenames_to_stats_parse(PyObject *dummy, PyObject *args, PyObject *kwargs, int 
 }
 
 static PyObject*
-filenames_to_stats_1d_cfunc(PyObject *dummy, PyObject *args, PyObject *kwargs)
-{
-    return filenames_to_stats_parse(dummy, args, kwargs, ONED);
-}
-
-static PyObject*
 filenames_to_stats_2d_cfunc(PyObject *dummy, PyObject *args, PyObject *kwargs)
 {
-    return filenames_to_stats_parse(dummy, args, kwargs, TWOD);
+    char scaling = 'm';
+
+    static char *kwlist[] = {"filenames", "scaling", NULL};
+
+    const char *str;
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|c", kwlist, &str, &start, &end, &num_bins, &scaling)) {
+        PyErr_SetString(PyExc_RuntimeError, "failed to parse args (in C)");
+        return NULL;
+    }
+
+    int len = strlen(str) + 1;
+    char *copy = safe_calloc(len, 1);
+    strncpy(copy, str, len);
+    struct matrix m = filenames_to_stats(copy, mflag, start, end, num_bins, scaling);
+
+    assert(m.is_owner);
+
+    return mat_to_pyobject(m);
 }
 
 static PyObject*
