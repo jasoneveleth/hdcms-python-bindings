@@ -79,11 +79,12 @@ static PyObject*
 filenames_to_stats_parse(PyObject *dummy, PyObject *args, PyObject *kwargs, int mflag)
 {
     double start = 0, end = 899.90000000000009094947, num_bins = 9000;
+    char scaling;
 
-    static char *kwlist[] = {"filenames", "start", "end", "num_bins", NULL};
+    static char *kwlist[] = {"filenames", "start", "end", "num_bins", "scaling", NULL};
 
     const char *str;
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|ddd", kwlist, &str, &start, &end, &num_bins)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|dddc", kwlist, &str, &start, &end, &num_bins, &scaling)) {
         PyErr_SetString(PyExc_RuntimeError, "didn't reviece a string");
         return NULL;
     }
@@ -91,7 +92,7 @@ filenames_to_stats_parse(PyObject *dummy, PyObject *args, PyObject *kwargs, int 
     int len = strlen(str) + 1;
     char *copy = safe_calloc(len, 1);
     strncpy(copy, str, len);
-    struct matrix m = filenames_to_stats(copy, mflag, start, end, num_bins);
+    struct matrix m = filenames_to_stats(copy, mflag, start, end, num_bins, scaling);
 
     assert(m.is_owner);
 
