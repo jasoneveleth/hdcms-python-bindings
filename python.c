@@ -92,7 +92,7 @@ filenames_to_stats_1d_cfunc(PyObject *dummy, PyObject *args, PyObject *kwargs)
     int len = strlen(str) + 1;
     char *copy = safe_calloc(len, 1);
     strncpy(copy, str, len);
-    struct matrix m = filenames_to_stats(copy, ONED, start, end, num_bins, scaling[0]);
+    struct matrix m = filenames_to_stats(copy, ONED, start, end, num_bins, scaling[0], inf);
 
     assert(m.is_owner);
 
@@ -106,7 +106,8 @@ filenames_to_stats_2d_cfunc(PyObject *dummy, PyObject *args, PyObject *kwargs)
 
     const char *str;
     const char *scaling = "m";
-    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|s", kwlist, &str, &scaling)) {
+    double xtol = inf;
+    if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|sd", kwlist, &str, &scaling, &xtol)) {
         PyErr_SetString(PyExc_RuntimeError, "failed to parse args (in C)");
         return NULL;
     }
@@ -115,7 +116,7 @@ filenames_to_stats_2d_cfunc(PyObject *dummy, PyObject *args, PyObject *kwargs)
     char *copy = safe_calloc(len, 1);
     strncpy(copy, str, len);
     // we can pass dummy values since they will be singored by the mflag
-    struct matrix m = filenames_to_stats(copy, TWOD, 0, 0, 0, scaling[0]);
+    struct matrix m = filenames_to_stats(copy, TWOD, 0, 0, 0, scaling[0], xtol);
 
     assert(m.is_owner);
 
