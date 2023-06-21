@@ -51,6 +51,8 @@ https://numpy.org/doc/stable/reference/c-api/dtype.html
 
 # Changelog
 
+0.1.6 Add xtol
+
 0.1.5 Update start, stop, num_bins, and scaling for both 1d and 2d
 
 0.1.4 Rename package (setup.py has the import name, which must match the c lib symbols)
